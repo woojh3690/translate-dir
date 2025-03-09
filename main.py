@@ -32,7 +32,7 @@ if not folder_path:
 # -------------------------------
 all_entries = os.listdir(folder_path)
 english_folders = [d for d in all_entries if os.path.isdir(os.path.join(folder_path, d))
-                   and re.fullmatch(r"[A-Za-z\s]+", d)]
+                   and re.fullmatch(r"^(?!.*[가-힣]).+$", d)]
 if not english_folders:
     print("영어로만 이루어진 폴더명이 없습니다.")
     exit(0)
