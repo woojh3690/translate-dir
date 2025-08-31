@@ -70,7 +70,7 @@ prompt = (
 print("OpenAI에 번역 요청 중입니다...")
 
 completion = client.beta.chat.completions.parse(
-    model="gpt-4o",
+    model="gpt-4.1",
     messages=[
         {
             "role": "system",
