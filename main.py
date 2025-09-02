@@ -58,7 +58,7 @@ class Translations(BaseModel):
 
 # -------------------------------
 # 4. OpenAI API를 호출하여 base 이름 번역 요청 (한번만 호출)
-#    모델 버전은 "gpt-4o"를 사용하며, 반드시 JSON 형식으로 결과를 출력하도록 함.
+#    모델은 반드시 JSON 형식으로 결과를 출력하도록 함.
 # -------------------------------
 prompt = (
     "다음 영어 파일명의 base 이름(확장자 제외)을 한국어로 번역해줘. "
@@ -70,7 +70,7 @@ prompt = (
 print("OpenAI에 번역 요청 중입니다...")
 
 completion = client.beta.chat.completions.parse(
-    model="gpt-4.1",
+    model="gpt-5-mini",
     messages=[
         {
             "role": "system",
