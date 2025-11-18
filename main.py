@@ -27,22 +27,30 @@ if not folder_path:
     exit(0)
 
 # -------------------------------
-# 2. 선택한 폴더 내의 파일 중 한글이 포함되지 않은 파일만 추출 (깊이 1)
+# 2. 선택한 폴더 내의 파일 중 한글이 포함되지 않은 파일만 추출 (재귀)
 # -------------------------------
-all_entries = os.listdir(folder_path)
-english_files = [f for f in all_entries if os.path.isfile(os.path.join(folder_path, f))
-                 and not re.search(r"[가-힣]", f)]
+english_files = []
+for current_root, _, files in os.walk(folder_path):
+    for filename in files:
+        if re.search(r"[가-힣]", filename):
+            continue
+        relative_dir = os.path.relpath(current_root, folder_path)
+        if relative_dir == '.':
+            relative_dir = ''
+        english_files.append({'dir': relative_dir, 'name': filename})
+
 if not english_files:
     print("한글이 포함되지 않은 파일명이 없습니다.")
     exit(0)
 
 # 파일명을 확장자 제외한 base 이름으로 그룹화
 file_groups = {}
-for filename in english_files:
-    base, ext = os.path.splitext(filename)
+for file_entry in english_files:
+    base, ext = os.path.splitext(file_entry['name'])
     if base not in file_groups:
         file_groups[base] = []
-    file_groups[base].append(ext)
+    file_groups[base].append({'ext': ext, 'dir': file_entry['dir']})
+
 
 unique_bases = list(file_groups.keys())
 
@@ -125,15 +133,17 @@ if confirm != 'y':
 # 6. 실제 파일명 변경 (os.rename 사용)
 #    파일의 base 이름만 변경하고 원래 확장자는 그대로 유지
 # -------------------------------
-for original_base, ext_list in file_groups.items():
+for original_base, entry_list in file_groups.items():
     # 번역된 파일명의 base 찾기
     translation_entry = next((item for item in translations_obj.translations if item.original == original_base), None)
     if translation_entry:
-        for ext in ext_list:
+        for entry in entry_list:
+            ext = entry["ext"]
+            target_dir = os.path.join(folder_path, entry["dir"]) if entry["dir"] else folder_path
             old_filename = original_base + ext
             new_filename = translation_entry.translated + ext
-            old_path = os.path.join(folder_path, old_filename)
-            new_path = os.path.join(folder_path, new_filename)
+            old_path = os.path.join(target_dir, old_filename)
+            new_path = os.path.join(target_dir, new_filename)
             try:
                 os.rename(old_path, new_path)
                 print(f"변경 완료: {old_filename} -> {new_filename}")
