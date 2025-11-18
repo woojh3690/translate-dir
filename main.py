@@ -69,8 +69,8 @@ prompt = (
 
 print("OpenAI에 번역 요청 중입니다...")
 
-completion = client.beta.chat.completions.parse(
-    model="gpt-4.1",
+completion = client.chat.completions.parse(
+    model="gpt-5.1",
     messages=[
         {
             "role": "system",
@@ -82,7 +82,8 @@ completion = client.beta.chat.completions.parse(
         }
     ],
     response_format=Translations,
-    temperature=0
+    temperature=0,
+    reasoning_effort="none"
 )
 
 # OpenAI 응답에서 내용을 추출
