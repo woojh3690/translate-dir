@@ -47,6 +47,11 @@ if not english_files:
 file_groups = {}
 for file_entry in english_files:
     base, ext = os.path.splitext(file_entry['name'])
+    # 오른쪽 끝에 제2의 확장자가 있다면 검사
+    if "." in base[6:]:
+        base_split = base.split(".")
+        ext = "." + base_split[-1] + ext
+        base = ".".join(base_split[:-1])
     if base not in file_groups:
         file_groups[base] = []
     file_groups[base].append({'ext': ext, 'dir': file_entry['dir']})
@@ -141,7 +146,7 @@ for original_base, entry_list in file_groups.items():
             ext = entry["ext"]
             target_dir = os.path.join(folder_path, entry["dir"]) if entry["dir"] else folder_path
             old_filename = original_base + ext
-            new_filename = translation_entry.translated + ext
+            new_filename = (translation_entry.translated + ext).replace("?", "？")
             old_path = os.path.join(target_dir, old_filename)
             new_path = os.path.join(target_dir, new_filename)
             try:
