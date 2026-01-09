@@ -74,20 +74,20 @@ class Translations(BaseModel):
 #    모델은 반드시 JSON 형식으로 결과를 출력하도록 함.
 # -------------------------------
 prompt = (
-    "다음 영어 파일명의 base 이름(확장자 제외)을 한국어로 번역해줘. "
+    "다음 파일명의 base 이름(확장자 제외)을 한국어로 번역해줘. "
     "출력은 반드시 JSON 형식으로 해줘. JSON 포맷 예시는 아래와 같아:\n"
-    '{"translations": [{"original": "EnglishFile", "translated": "한국어파일"}]}\n'
+    '{"translations": [{"original": "FileName", "translated": "한국어파일"}]}\n'
     f"파일명 목록: {unique_bases}"
 )
 
 print("OpenAI에 번역 요청 중입니다...")
 
 completion = client.chat.completions.parse(
-    model="gpt-5.1",
+    model="gpt-5.2",
     messages=[
         {
             "role": "system",
-            "content": "너는 영어 파일명의 base 이름을 한국어로 번역하는 번역가야. 반드시 JSON 형식으로 결과를 출력해."
+            "content": "너는 파일명의 base 이름을 한국어로 번역하는 번역가야. 반드시 JSON 형식으로 결과를 출력해."
         },
         {
             "role": "user",
